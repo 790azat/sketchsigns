@@ -15,8 +15,12 @@
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $description ?? config('site.description') }}">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <link rel="canonical" href="{{ url()->current() }}">
+    @php $canonical = rtrim(config('site.canonical_url'), '/').'/'.ltrim(request()->path(), '/'); @endphp
+    <meta property="og:url" content="{{ rtrim($canonical, '/') ?: config('site.canonical_url') }}">
+    <link rel="canonical" href="{{ rtrim($canonical, '/') ?: config('site.canonical_url') }}">
+    @unless (config('site.indexable'))
+        <meta name="robots" content="noindex, nofollow">
+    @endunless
     <link rel="icon" href="{{ Catalog::media(config('site.logo')) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles

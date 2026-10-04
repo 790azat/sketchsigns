@@ -22,6 +22,10 @@ return [
 
     // Product and project photos are served from the original WordPress media library.
     // Point this at your own CDN / bucket once the old site is switched off.
+    // Public domain for canonical links; the Vercel copy is a test site.
+    'canonical_url' => rtrim(env('SITE_CANONICAL_URL', 'https://sketchsigns.com'), '/'),
+    'indexable' => (bool) env('SITE_INDEXABLE', false),
+
     'media_url' => rtrim(env('MEDIA_URL', 'https://sketchsigns.com/wp-content/uploads'), '/'),
 
     // Serve catalog images from public/media instead of Vercel Blob.
@@ -45,7 +49,7 @@ return [
         'Trustpilot' => 'https://www.trustpilot.com/evaluate/sketchsigns.com',
     ],
 
-    'payments' => ['Visa', 'Mastercard', 'Amex', 'Discover', 'Apple Pay', 'Google Pay', 'Affirm'],
+    'payments' => ['Visa', 'Mastercard', 'Amex', 'Discover', 'Apple Pay', 'Google Pay'],
 
     'perks' => [
         ['title' => 'Free Art Checks', 'text' => 'Every order gets a free file check by a real designer before it prints.'],
