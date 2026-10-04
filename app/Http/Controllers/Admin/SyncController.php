@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Services\WooImporter;
+use App\Support\Catalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
@@ -42,6 +43,13 @@ class SyncController extends Controller
             'products_total' => Product::count(),
             'next' => $result['page'] < $result['total_pages'] ? $result['page'] + 1 : null,
         ]);
+    }
+
+    public function siteMedia(WooImporter $importer)
+    {
+        $urls = collect(Catalog::siteMediaUrls())->mapWithKeys(fn ($src) => [$src => $importer->mirror($src, 'site')]);
+
+        return response()->json(['site_media' => $urls]);
     }
 
     public function status()

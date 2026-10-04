@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\Category;
+use App\Models\Media;
 use App\Models\Product;
 use Illuminate\Support\Collection;
 use Throwable;
@@ -58,7 +59,30 @@ class Catalog
             return asset('images/placeholder.svg');
         }
 
-        return str_starts_with($path, 'http') ? $path : config('site.media_url').'/'.ltrim($path, '/');
+        $url = str_starts_with($path, 'http') ? $path : config('site.media_url').'/'.ltrim($path, '/');
+
+        return static::mirrored()[$url] ?? $url;
+    }
+
+    /** Old-site image URLs already copied to Blob storage (see admin/sync/site-media). */
+    public static function siteMediaUrls(): array
+    {
+        return collect([config('site.logo')])
+            ->merge(collect(config('site.projects'))->pluck('image'))
+            ->filter()->unique()
+            ->map(fn (string $path) => config('site.media_url').'/'.ltrim($path, '/'))
+            ->values()->all();
+    }
+
+    private static function mirrored(): array
+    {
+        return once(function () {
+            try {
+                return Media::whereIn('source_url', static::siteMediaUrls())->pluck('url', 'source_url')->all();
+            } catch (Throwable) {
+                return [];
+            }
+        });
     }
 
     public static function money(int|float $cents): string

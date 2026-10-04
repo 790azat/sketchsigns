@@ -39,5 +39,6 @@ Route::controller(SyncController::class)->prefix('admin/sync')->group(function (
     Route::get('migrate', 'migrate');
     Route::get('categories', 'categories');
     Route::get('products', 'products');
+    Route::get('site-media', 'siteMedia');
     Route::get('status', 'status');
 });
