@@ -70,7 +70,7 @@
                     </div>
                 </div>
             @endforeach
-            <div class="group relative ml-auto">
+            <div class="group relative">
                 <a href="{{ route('industries') }}" class="rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">Industries</a>
                 <div class="invisible absolute top-full right-0 z-50 grid w-[30rem] translate-y-1 grid-cols-2 gap-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                     @foreach ($industries as $industry)
