@@ -109,7 +109,9 @@ return [
             'handler_with' => [
                 'stream' => 'php://stderr',
             ],
-            'formatter' => env('LOG_STDERR_FORMATTER'),
+            // One line per entry without stack traces, so Vercel's log viewer shows the actual error.
+            'formatter' => env('LOG_STDERR_FORMATTER', \Monolog\Formatter\LineFormatter::class),
+            'formatter_with' => ['includeStacktraces' => false],
             'processors' => [PsrLogMessageProcessor::class],
         ],
 
