@@ -24,6 +24,9 @@ return [
     // Point this at your own CDN / bucket once the old site is switched off.
     'media_url' => rtrim(env('MEDIA_URL', 'https://sketchsigns.com/wp-content/uploads'), '/'),
 
+    // Serve catalog images from public/media instead of Vercel Blob.
+    'local_media' => (bool) env('MEDIA_LOCAL', false),
+
     // Amount in dollars added when the customer asks us to design the artwork.
     'design_fee' => 25,
 

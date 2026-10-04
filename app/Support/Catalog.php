@@ -63,9 +63,16 @@ class Catalog
 
         $url = static::mirrored()[$url] ?? $url;
 
-        // While the Blob store is unavailable, serve the original WordPress copy instead.
-        if (config('services.blob.serve_origin') && str_contains($url, '.blob.vercel-storage.com/')) {
-            return static::origins()[$url] ?? $url;
+        if (str_contains($url, '.blob.vercel-storage.com/')) {
+            // Images committed to public/media (see .github/workflows/media.yml) keep their Blob paths.
+            if (config('site.local_media')) {
+                return asset('media/'.ltrim(parse_url($url, PHP_URL_PATH), '/'));
+            }
+
+            // While the Blob store is unavailable, serve the original WordPress copy instead.
+            if (config('services.blob.serve_origin')) {
+                return static::origins()[$url] ?? $url;
+            }
         }
 
         return $url;

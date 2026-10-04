@@ -6,7 +6,7 @@
     "functions": {
         "api/index.php": {
             "runtime": "vercel-php@0.9.0",
-            "excludeFiles": "{node_modules/**,tests/**,storage/logs/**,storage/framework/views/**,resources/css/**,resources/js/**}",
+            "excludeFiles": "{node_modules/**,tests/**,storage/logs/**,storage/framework/views/**,resources/css/**,resources/js/**,public/media/**}",
             "maxDuration": 60
         }
     },
@@ -18,6 +18,13 @@
         {
             "src": "/images/(.*)",
             "dest": "/images/$1"
+        },
+        {
+            "src": "/media/(.*)",
+            "headers": {
+                "Cache-Control": "public, max-age=604800"
+            },
+            "dest": "/media/$1"
         },
         {
             "src": "/(favicon\\.ico|robots\\.txt)",

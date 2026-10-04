@@ -60,6 +60,15 @@ class SyncController extends Controller
         return response()->json($result + ['next' => $result['page'] < $result['total_pages'] ? $result['page'] + 1 : null]);
     }
 
+    /** Every mirrored image: where it came from and its path in storage (used to build public/media). */
+    public function mediaMap()
+    {
+        return response()->json(\App\Models\Media::orderBy('id')->get()->map(fn ($m) => [
+            'source' => $m->source_url,
+            'path' => ltrim(parse_url($m->url, PHP_URL_PATH), '/'),
+        ]));
+    }
+
     public function status()
     {
         return response()->json([

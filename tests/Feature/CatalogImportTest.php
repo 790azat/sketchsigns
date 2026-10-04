@@ -121,6 +121,9 @@ class CatalogImportTest extends TestCase
 
         config(['services.blob.serve_origin' => true]);
         $this->assertSame('https://sketchsigns.com/wp-content/uploads/x.jpg', \App\Support\Catalog::media($blob));
+
+        config(['site.local_media' => true]);
+        $this->assertSame(url('media/products/x.jpg'), \App\Support\Catalog::media($blob));
     }
 
     public function test_remirror_uploads_smaller_images_to_the_same_paths(): void
