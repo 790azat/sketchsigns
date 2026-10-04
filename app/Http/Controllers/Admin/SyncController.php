@@ -58,6 +58,16 @@ class SyncController extends Controller
             'categories' => Category::count(),
             'products' => Product::count(),
             'without_blob_image' => Product::where('image', 'not like', '%blob.vercel-storage.com%')->count(),
+            'missing_configured_slugs' => $this->missingSlugs(),
         ]);
+    }
+
+    /** Product slugs named in config/site.php that the catalog doesn't have. */
+    private function missingSlugs(): array
+    {
+        $slugs = collect(config('site.industries'))->pluck('products')->flatten()
+            ->merge(config('site.featured_products'))->unique();
+
+        return $slugs->diff(Product::whereIn('slug', $slugs)->pluck('slug'))->values()->all();
     }
 }
