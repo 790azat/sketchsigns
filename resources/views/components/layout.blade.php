@@ -52,33 +52,35 @@
         </div>
 
         {{-- Category menu --}}
-        <nav class="container-x hidden items-center gap-0.5 pb-2 xl:flex" aria-label="Main">
-            <a href="{{ route('shop') }}" class="rounded-full px-3 py-2 text-sm font-semibold whitespace-nowrap hover:bg-paper">Shop All</a>
-            @foreach ($categories as $category)
+        <div class="hidden border-t border-slate-100 xl:block">
+            <nav class="container-x flex items-center gap-0.5 py-2" aria-label="Main">
+                <a href="{{ route('shop') }}" class="rounded-full px-3 py-2 text-sm font-semibold whitespace-nowrap hover:bg-paper">Shop All</a>
+                @foreach ($categories as $category)
+                    <div class="group relative">
+                        <a href="{{ route('category', $category['slug']) }}" class="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">
+                            {{ $category->name }}
+                        </a>
+                        <div class="invisible absolute top-full left-0 z-50 w-72 translate-y-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                            @foreach ($category->products()->active()->orderBy('position')->limit(8)->get() as $p)
+                                <a href="{{ route('product', $p['slug']) }}" class="flex items-center gap-3 rounded-xl p-2 text-sm hover:bg-paper">
+                                    <x-img :src="$p['image']" alt="" class="size-10 rounded-lg object-cover" />
+                                    <span>{{ $p['name'] }}</span>
+                                </a>
+                            @endforeach
+                            <a href="{{ route('category', $category['slug']) }}" class="mt-1 block rounded-xl px-2 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-50">Shop all {{ $category['name'] }} →</a>
+                        </div>
+                    </div>
+                @endforeach
                 <div class="group relative">
-                    <a href="{{ route('category', $category['slug']) }}" class="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">
-                        {{ $category->name }}
-                    </a>
-                    <div class="invisible absolute top-full left-0 z-50 w-72 translate-y-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                        @foreach ($category->products()->active()->orderBy('position')->limit(8)->get() as $p)
-                            <a href="{{ route('product', $p['slug']) }}" class="flex items-center gap-3 rounded-xl p-2 text-sm hover:bg-paper">
-                                <x-img :src="$p['image']" alt="" class="size-10 rounded-lg object-cover" />
-                                <span>{{ $p['name'] }}</span>
-                            </a>
+                    <a href="{{ route('industries') }}" class="rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">Industries</a>
+                    <div class="invisible absolute top-full right-0 z-50 grid w-[30rem] translate-y-1 grid-cols-2 gap-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+                        @foreach ($industries as $industry)
+                            <a href="{{ route('industry', $industry['slug']) }}" class="rounded-xl px-3 py-2 text-sm hover:bg-paper">{{ $industry['name'] }}</a>
                         @endforeach
-                        <a href="{{ route('category', $category['slug']) }}" class="mt-1 block rounded-xl px-2 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-50">Shop all {{ $category['name'] }} →</a>
                     </div>
                 </div>
-            @endforeach
-            <div class="group relative">
-                <a href="{{ route('industries') }}" class="rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">Industries</a>
-                <div class="invisible absolute top-full right-0 z-50 grid w-[30rem] translate-y-1 grid-cols-2 gap-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                    @foreach ($industries as $industry)
-                        <a href="{{ route('industry', $industry['slug']) }}" class="rounded-xl px-3 py-2 text-sm hover:bg-paper">{{ $industry['name'] }}</a>
-                    @endforeach
-                </div>
-            </div>
-        </nav>
+            </nav>
+        </div>
 
         {{-- Mobile menu --}}
         <div x-show="mobile" x-cloak x-transition class="border-t border-slate-200 bg-white xl:hidden">
