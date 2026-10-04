@@ -18,7 +18,7 @@ use Throwable;
  */
 class WooImporter
 {
-    public function __construct(private BlobStorage $blob) {}
+    public function __construct(private BlobStorage $blob, private ImageShrinker $shrinker) {}
 
     private function api(string $path, array $query = []): Response
     {
@@ -177,7 +177,7 @@ class WooImporter
             $file = Http::timeout(30)->retry(2, 500)->get($src);
             $type = Str::before($file->header('Content-Type') ?: 'image/jpeg', ';');
             $name = Str::slug(pathinfo(parse_url($src, PHP_URL_PATH), PATHINFO_FILENAME)).'.'.(pathinfo(parse_url($src, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg');
-            $url = $this->blob->put("{$folder}/{$name}", $file->body(), $type);
+            $url = $this->blob->put("{$folder}/{$name}", $this->shrinker->shrink($file->body(), $type), $type);
         } catch (Throwable $e) {
             Log::warning('Image mirror failed, keeping original URL', ['src' => $src, 'error' => $e->getMessage()]);
 
@@ -187,6 +187,32 @@ class WooImporter
         Media::create(['source_url' => $src, 'url' => $url]);
 
         return $url;
+    }
+
+    /**
+     * Re-upload already mirrored images (smaller) to the same Blob paths, so stored URLs stay valid.
+     *
+     * @return array{updated: int, failed: int, page: int, total_pages: int}
+     */
+    public function remirror(int $page = 1, int $perPage = 20): array
+    {
+        $media = Media::orderBy('id')->paginate($perPage, ['*'], 'page', $page);
+        $updated = $failed = 0;
+
+        foreach ($media as $item) {
+            try {
+                $file = Http::timeout(30)->retry(2, 500)->get($item->source_url);
+                $type = Str::before($file->header('Content-Type') ?: 'image/jpeg', ';');
+                $pathname = ltrim(parse_url($item->url, PHP_URL_PATH), '/');
+                $this->blob->put($pathname, $this->shrinker->shrink($file->body(), $type), $type);
+                $updated++;
+            } catch (Throwable $e) {
+                Log::warning('Image re-mirror failed', ['src' => $item->source_url, 'error' => $e->getMessage()]);
+                $failed++;
+            }
+        }
+
+        return ['updated' => $updated, 'failed' => $failed, 'page' => $media->currentPage(), 'total_pages' => $media->lastPage()];
     }
 
     private function text(string $value): string

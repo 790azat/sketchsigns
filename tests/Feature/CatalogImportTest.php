@@ -122,4 +122,34 @@ class CatalogImportTest extends TestCase
         config(['services.blob.serve_origin' => true]);
         $this->assertSame('https://sketchsigns.com/wp-content/uploads/x.jpg', \App\Support\Catalog::media($blob));
     }
+
+    public function test_remirror_uploads_smaller_images_to_the_same_paths(): void
+    {
+        $big = imagecreatetruecolor(2400, 1600);
+        imagefill($big, 0, 0, imagecolorallocate($big, 200, 80, 30));
+        ob_start();
+        imagejpeg($big, null, 100);
+        $jpeg = ob_get_clean();
+
+        config(['services.blob.token' => 'vercel_blob_rw_store123_secret']);
+        \App\Models\Media::create(['source_url' => 'https://media.example.com/big.jpg', 'url' => 'https://store123.public.blob.vercel-storage.com/products/big.jpg']);
+
+        $uploaded = [];
+        Http::fake([
+            'media.example.com/*' => Http::response($jpeg, 200, ['Content-Type' => 'image/jpeg']),
+            'vercel.com/api/blob/*' => function ($request) use (&$uploaded) {
+                $uploaded[] = $request;
+
+                return Http::response(['url' => 'https://store123.public.blob.vercel-storage.com/products/big.jpg']);
+            },
+        ]);
+
+        $result = app(\App\Services\WooImporter::class)->remirror();
+
+        $this->assertSame(['updated' => 1, 'failed' => 0, 'page' => 1, 'total_pages' => 1], $result);
+        $this->assertStringContainsString('pathname=products%2Fbig.jpg', $uploaded[0]->url());
+        [$width] = getimagesizefromstring($uploaded[0]->body());
+        $this->assertSame(1200, $width);
+        $this->assertLessThan(strlen($jpeg), strlen($uploaded[0]->body()));
+    }
 }

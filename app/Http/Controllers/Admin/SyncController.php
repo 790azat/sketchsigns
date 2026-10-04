@@ -52,6 +52,14 @@ class SyncController extends Controller
         return response()->json(['site_media' => $urls]);
     }
 
+    public function remirror(Request $request, WooImporter $importer)
+    {
+        set_time_limit(300);
+        $result = $importer->remirror((int) $request->query('page', 1), (int) $request->query('per_page', 20));
+
+        return response()->json($result + ['next' => $result['page'] < $result['total_pages'] ? $result['page'] + 1 : null]);
+    }
+
     public function status()
     {
         return response()->json([

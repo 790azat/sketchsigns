@@ -40,5 +40,6 @@ Route::controller(SyncController::class)->prefix('admin/sync')->group(function (
     Route::get('categories', 'categories');
     Route::get('products', 'products');
     Route::get('site-media', 'siteMedia');
+    Route::get('remirror', 'remirror');
     Route::get('status', 'status');
 });

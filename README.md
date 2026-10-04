@@ -38,3 +38,19 @@ Required environment variables in Vercel (Project → Settings → Environment V
 - `APP_URL` — e.g. `https://sketchsigns.com`
 
 To actually send order / quote emails, also set `MAIL_MAILER=smtp`, `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_FROM_ADDRESS` (or use Resend / Postmark). Without them, submissions are written to the function logs.
+
+## Catalog and images
+
+Products, categories and images come from the old WooCommerce site. On Vercel (no shell) the import runs through
+token-protected URLs, each call doing one small batch: add `?token=<ADMIN_TOKEN>` to
+
+- `/admin/sync/migrate`: run migrations
+- `/admin/sync/categories`: import categories
+- `/admin/sync/products?page=1&per_page=5`: import products; follow `next` until it is `null`
+- `/admin/sync/site-media`: copy the logo and project photos
+- `/admin/sync/remirror?page=1`: re-upload every image scaled to at most 1200px, to the same Blob paths
+- `/admin/sync/status`: counts and anything missing
+
+Locally, `php artisan catalog:import` does the same.
+
+If the Blob store is unavailable, set `BLOB_SERVE_ORIGIN=true` to serve images from their original URLs.
