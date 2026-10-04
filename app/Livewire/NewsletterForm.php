@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Subscriber;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Validate;
@@ -17,6 +18,7 @@ class NewsletterForm extends Component
     public function subscribe(): void
     {
         $this->validate();
+        Subscriber::firstOrCreate(['email' => strtolower($this->email)]);
 
         try {
             Mail::raw("New newsletter subscriber: {$this->email}", fn ($m) => $m

@@ -42,5 +42,6 @@ Route::controller(SyncController::class)->prefix('admin/sync')->group(function (
     Route::get('site-media', 'siteMedia');
     Route::get('remirror', 'remirror');
     Route::get('media-map', 'mediaMap');
+    Route::get('admin-user', 'adminUser');
     Route::get('status', 'status');
 });

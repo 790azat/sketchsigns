@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\QuoteRequest;
 use App\Support\Catalog;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -56,6 +57,8 @@ class QuoteForm extends Component
 
             return;
         }
+
+        QuoteRequest::create(collect($data)->map(fn ($v) => $v === '' ? null : $v)->all());
 
         $body = collect($data)
             ->filter(fn ($v) => filled($v))

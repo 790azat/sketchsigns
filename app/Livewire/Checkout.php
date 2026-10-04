@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Order;
 use App\Support\Cart;
 use App\Support\Catalog;
 use Illuminate\Support\Facades\Log;
@@ -56,6 +57,12 @@ class Checkout extends Component
         $body = "Order {$this->orderNumber}\n\n"
             .collect($data)->filter(fn ($v) => filled($v))->map(fn ($v, $k) => Str::title($k).": $v")->implode("\n")
             ."\n\nItems:\n{$lines}\n\nSubtotal: ".Catalog::money(Cart::subtotal());
+
+        Order::create($data + [
+            'number' => $this->orderNumber,
+            'items' => array_values($items),
+            'subtotal' => Cart::subtotal(),
+        ]);
 
         try {
             Mail::raw($body, fn ($m) => $m

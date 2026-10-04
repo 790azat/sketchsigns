@@ -69,6 +69,20 @@ class SyncController extends Controller
         ]));
     }
 
+    /** Create or reset an admin-panel login; the new password is shown once in the response. */
+    public function adminUser(Request $request)
+    {
+        $data = $request->validate(['email' => 'required|email', 'name' => 'nullable|string|max:120']);
+        $password = \Illuminate\Support\Str::password(16, symbols: false);
+
+        $user = \App\Models\User::updateOrCreate(
+            ['email' => strtolower($data['email'])],
+            ['name' => $data['name'] ?? 'Admin', 'password' => $password],
+        );
+
+        return response()->json(['email' => $user->email, 'password' => $password, 'login' => url('/admin/login')]);
+    }
+
     public function status()
     {
         return response()->json([
