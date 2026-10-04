@@ -86,7 +86,18 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DB_URL', env('DATABASE_URL')),
+            'url' => (function (?string $url) {
+                // PHP's bundled libpq may lack SNI, which Neon needs to route a connection.
+                // Neon's documented fallback: pass the endpoint ID inside the password.
+                $parts = $url ? parse_url($url) : false;
+                if (! $parts || ! str_ends_with($parts['host'] ?? '', '.neon.tech') || str_starts_with(rawurldecode($parts['pass'] ?? ''), 'endpoint=')) {
+                    return $url;
+                }
+                $endpoint = str_replace('-pooler', '', explode('.', $parts['host'])[0]);
+                $password = rawurlencode('endpoint='.$endpoint.'$'.rawurldecode($parts['pass'] ?? ''));
+
+                return preg_replace('#^(\w+://[^:]+:)[^@]*@#', '${1}'.str_replace('$', '\\$', $password).'@', $url);
+            })(env('DB_URL', env('DATABASE_URL'))),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'laravel'),

@@ -50,5 +50,8 @@
         "QUEUE_CONNECTION": "sync",
         "LOG_CHANNEL": "stderr",
         "DB_CONNECTION": "pgsql"
-    }
+    },
+    "regions": [
+        "fra1"
+    ]
 }
