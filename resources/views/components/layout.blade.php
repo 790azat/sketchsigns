@@ -42,10 +42,10 @@
                 <span class="text-xl font-extrabold tracking-tight">Sketch<span class="text-brand-500">Signs</span></span>
             </a>
 
-            <div class="ml-auto flex items-center gap-2">
+            <div class="ml-auto flex items-center gap-2 xl:hidden">
                 <a href="{{ route('quote') }}" class="btn-primary hidden !px-4 !py-2 sm:inline-flex">Get a Quote</a>
                 <livewire:cart-counter />
-                <button type="button" class="grid size-10 place-items-center rounded-full hover:bg-paper xl:hidden" @click="mobile = !mobile" aria-label="Menu">
+                <button type="button" class="grid size-10 place-items-center rounded-full hover:bg-paper" @click="mobile = !mobile" aria-label="Menu">
                     <svg class="size-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
                 </button>
             </div>
@@ -53,11 +53,11 @@
 
         {{-- Category menu --}}
         <div class="hidden border-t border-slate-100 xl:block">
-            <nav class="container-x flex items-center gap-0.5 py-2" aria-label="Main">
-                <a href="{{ route('shop') }}" class="rounded-full px-3 py-2 text-sm font-semibold whitespace-nowrap hover:bg-paper">Shop All</a>
+            <nav class="container-x flex items-center py-2" aria-label="Main">
+                <a href="{{ route('shop') }}" class="rounded-full px-2 py-2 text-sm 2xl:px-3 font-semibold whitespace-nowrap hover:bg-paper">Shop All</a>
                 @foreach ($categories as $category)
                     <div class="group relative">
-                        <a href="{{ route('category', $category['slug']) }}" class="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">
+                        <a href="{{ route('category', $category['slug']) }}" class="flex items-center gap-1 rounded-full px-2 py-2 text-sm 2xl:px-3 font-medium whitespace-nowrap hover:bg-paper">
                             {{ $category->name }}
                         </a>
                         <div class="invisible absolute top-full left-0 z-50 w-72 translate-y-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
@@ -72,12 +72,16 @@
                     </div>
                 @endforeach
                 <div class="group relative">
-                    <a href="{{ route('industries') }}" class="rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">Industries</a>
+                    <a href="{{ route('industries') }}" class="rounded-full px-2 py-2 text-sm 2xl:px-3 font-medium whitespace-nowrap hover:bg-paper">Industries</a>
                     <div class="invisible absolute top-full right-0 z-50 grid w-[30rem] translate-y-1 grid-cols-2 gap-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                         @foreach ($industries as $industry)
                             <a href="{{ route('industry', $industry['slug']) }}" class="rounded-xl px-3 py-2 text-sm hover:bg-paper">{{ $industry['name'] }}</a>
                         @endforeach
                     </div>
+                </div>
+                <div class="ml-auto flex items-center gap-2">
+                    <a href="{{ route('quote') }}" class="btn-primary !px-4 !py-2">Get a Quote</a>
+                    <livewire:cart-counter key="cart-counter-desktop" />
                 </div>
             </nav>
         </div>
