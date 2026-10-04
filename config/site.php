@@ -96,7 +96,7 @@ return [
         'restaurant-cafe-signs' => [
             'name' => 'Restaurants & Cafés',
             'intro' => 'Storefront signs, menu boards, A-frames and window graphics that bring hungry customers through the door.',
-            'products' => ['a-frame-sidewalk-sign', 'channel-letters', 'frosted-window-decals', 'vinyl-banner', 'poster-stand', 'grand-opening-banners'],
+            'products' => ['a-frame-sidewalk-sign', 'premium-acrylic-lit-letters', 'frosted-window-decals', 'vinyl-banner', 'poster-stand', 'grand-opening-banners'],
         ],
         'retail-signs' => [
             'name' => 'Retail Stores',
