@@ -36,13 +36,13 @@
 
     {{-- Header --}}
     <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div class="container-x flex h-18 items-center gap-6 py-3">
+        <div class="container-x flex h-18 items-center gap-6 py-3 xl:hidden">
             <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2.5">
                 <img src="{{ Catalog::media(config('site.logo')) }}" alt="" class="size-10 rounded-lg" onerror="this.style.display='none'">
                 <span class="text-xl font-extrabold tracking-tight">Sketch<span class="text-brand-500">Signs</span></span>
             </a>
 
-            <div class="ml-auto flex items-center gap-2 xl:hidden">
+            <div class="ml-auto flex items-center gap-2">
                 <a href="{{ route('quote') }}" class="btn-primary hidden !px-4 !py-2 sm:inline-flex">Get a Quote</a>
                 <livewire:cart-counter />
                 <button type="button" class="grid size-10 place-items-center rounded-full hover:bg-paper" @click="mobile = !mobile" aria-label="Menu">
@@ -52,12 +52,16 @@
         </div>
 
         {{-- Category menu --}}
-        <div class="hidden border-t border-slate-100 xl:block">
-            <nav class="container-x flex items-center py-2" aria-label="Main">
-                <a href="{{ route('shop') }}" class="rounded-full px-2 py-2 text-sm 2xl:px-3 font-semibold whitespace-nowrap hover:bg-paper">Shop All</a>
+        <div class="hidden xl:block">
+            <nav class="container-x flex h-18 items-center" aria-label="Main">
+                <a href="{{ route('home') }}" class="mr-2 flex shrink-0 items-center gap-2 2xl:mr-6">
+                    <img src="{{ Catalog::media(config('site.logo')) }}" alt="" class="size-9 rounded-lg" onerror="this.style.display='none'">
+                    <span class="text-lg font-extrabold tracking-tight 2xl:text-xl">Sketch<span class="text-brand-500">Signs</span></span>
+                </a>
+                <a href="{{ route('shop') }}" class="rounded-full px-1.5 py-2 text-[13px] 2xl:px-2.5 font-semibold whitespace-nowrap hover:bg-paper">Shop All</a>
                 @foreach ($categories as $category)
                     <div class="group relative">
-                        <a href="{{ route('category', $category['slug']) }}" class="flex items-center gap-1 rounded-full px-2 py-2 text-sm 2xl:px-3 font-medium whitespace-nowrap hover:bg-paper">
+                        <a href="{{ route('category', $category['slug']) }}" class="flex items-center gap-1 rounded-full px-1.5 py-2 text-[13px] 2xl:px-2.5 font-medium whitespace-nowrap hover:bg-paper">
                             {{ $category->name }}
                         </a>
                         <div class="invisible absolute top-full left-0 z-50 w-72 translate-y-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
@@ -72,7 +76,7 @@
                     </div>
                 @endforeach
                 <div class="group relative">
-                    <a href="{{ route('industries') }}" class="rounded-full px-2 py-2 text-sm 2xl:px-3 font-medium whitespace-nowrap hover:bg-paper">Industries</a>
+                    <a href="{{ route('industries') }}" class="rounded-full px-1.5 py-2 text-[13px] 2xl:px-2.5 font-medium whitespace-nowrap hover:bg-paper">Industries</a>
                     <div class="invisible absolute top-full right-0 z-50 grid w-[30rem] translate-y-1 grid-cols-2 gap-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
                         @foreach ($industries as $industry)
                             <a href="{{ route('industry', $industry['slug']) }}" class="rounded-xl px-3 py-2 text-sm hover:bg-paper">{{ $industry['name'] }}</a>
