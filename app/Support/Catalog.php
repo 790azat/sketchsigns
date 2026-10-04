@@ -61,7 +61,25 @@ class Catalog
 
         $url = str_starts_with($path, 'http') ? $path : config('site.media_url').'/'.ltrim($path, '/');
 
-        return static::mirrored()[$url] ?? $url;
+        $url = static::mirrored()[$url] ?? $url;
+
+        // While the Blob store is unavailable, serve the original WordPress copy instead.
+        if (config('services.blob.serve_origin') && str_contains($url, '.blob.vercel-storage.com/')) {
+            return static::origins()[$url] ?? $url;
+        }
+
+        return $url;
+    }
+
+    private static function origins(): array
+    {
+        return once(function () {
+            try {
+                return Media::pluck('source_url', 'url')->all();
+            } catch (Throwable) {
+                return [];
+            }
+        });
     }
 
     /** Old-site image URLs already copied to Blob storage (see admin/sync/site-media). */

@@ -111,4 +111,15 @@ class CatalogImportTest extends TestCase
         $this->get('/admin/sync/categories?token=secret')->assertOk()->assertJson(['categories' => 2]);
         $this->get('/admin/sync/products?token=secret&page=1')->assertOk()->assertJson(['imported' => 1, 'next' => null]);
     }
+
+    public function test_media_can_fall_back_to_the_original_url(): void
+    {
+        $blob = 'https://abc.public.blob.vercel-storage.com/products/x.jpg';
+        \App\Models\Media::create(['source_url' => 'https://sketchsigns.com/wp-content/uploads/x.jpg', 'url' => $blob]);
+
+        $this->assertSame($blob, \App\Support\Catalog::media($blob));
+
+        config(['services.blob.serve_origin' => true]);
+        $this->assertSame('https://sketchsigns.com/wp-content/uploads/x.jpg', \App\Support\Catalog::media($blob));
+    }
 }

@@ -43,6 +43,7 @@ return [
     'blob' => [
         'token' => env('BLOB_READ_WRITE_TOKEN'),
         'api_url' => env('VERCEL_BLOB_API_URL', 'https://vercel.com/api/blob'),
+        'serve_origin' => (bool) env('BLOB_SERVE_ORIGIN', false),
     ],
 
     // Protects the /admin/sync endpoints that run migrations and the catalog import on Vercel.

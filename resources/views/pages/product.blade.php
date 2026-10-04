@@ -12,7 +12,7 @@
         </nav>
 
         <div class="grid gap-10 lg:grid-cols-2">
-            <div x-data="{ active: @js($product->image) }" class="lg:sticky lg:top-28 lg:self-start">
+            <div x-data="{ active: @js(Catalog::media($product->image)) }" class="lg:sticky lg:top-28 lg:self-start">
                 <div class="overflow-hidden rounded-3xl bg-paper">
                     <img :src="active" src="{{ Catalog::media($product->image) }}" alt="{{ $product->name }}" class="aspect-square w-full object-cover"
                          onerror="this.onerror=null;this.src='{{ asset('images/placeholder.svg') }}'">
@@ -20,7 +20,7 @@
                 @if (count($product->gallery ?? []) > 1)
                     <div class="mt-3 grid grid-cols-5 gap-2">
                         @foreach ($product->gallery as $image)
-                            <button type="button" @click="active = @js($image)" class="overflow-hidden rounded-xl border-2 transition" :class="active === @js($image) ? 'border-brand-500' : 'border-transparent'">
+                            <button type="button" @click="active = @js(Catalog::media($image))" class="overflow-hidden rounded-xl border-2 transition" :class="active === @js(Catalog::media($image)) ? 'border-brand-500' : 'border-transparent'">
                                 <x-img :src="$image" :alt="$product->name.' photo '.$loop->iteration" class="aspect-square w-full object-cover" />
                             </button>
                         @endforeach
