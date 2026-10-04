@@ -1,5 +1,5 @@
 """Download every catalog image listed in database/media-map.json into public/media,
-scaled down to at most 1200px, keeping each file's storage path. Existing files are skipped."""
+scaled down to at most 1200px, keeping each file's storage path."""
 import io
 import json
 import pathlib
@@ -15,8 +15,6 @@ failed = 0
 
 for item in items:
     target = root / "public" / "media" / item["path"]
-    if target.exists():
-        continue
     try:
         request = urllib.request.Request(item["source"], headers={"User-Agent": "Mozilla/5.0 (sketchsigns media sync)"})
         data = urllib.request.urlopen(request, timeout=60).read()
