@@ -1,8 +1,7 @@
 @props(['title' => null, 'description' => null])
 @php
     use App\Support\Catalog;
-    $categories = Catalog::categories();
-    $products = Catalog::products();
+    $categories = Catalog::navCategories();
     $industries = Catalog::industries();
     $pageTitle = $title ? $title.' | '.config('site.name') : config('site.name').' — Custom Signs, Banners & Displays in Los Angeles';
 @endphp
@@ -48,10 +47,10 @@
                 @foreach ($categories as $category)
                     <div class="group relative">
                         <a href="{{ route('category', $category['slug']) }}" class="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium whitespace-nowrap hover:bg-paper">
-                            {{ $category['nav'] }}
+                            {{ $category->name }}
                         </a>
                         <div class="invisible absolute top-full left-0 z-50 w-72 translate-y-1 rounded-2xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
-                            @foreach ($products->where('category', $category['slug'])->take(8) as $p)
+                            @foreach ($category->products()->active()->orderBy('position')->limit(8)->get() as $p)
                                 <a href="{{ route('product', $p['slug']) }}" class="flex items-center gap-3 rounded-xl p-2 text-sm hover:bg-paper">
                                     <x-img :src="$p['image']" alt="" class="size-10 rounded-lg object-cover" />
                                     <span>{{ $p['name'] }}</span>

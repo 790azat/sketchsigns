@@ -78,3 +78,13 @@
 [x-cloak] {
     display: none !important;
 }
+
+/* Product descriptions imported from the old site */
+.rich h2 { @apply mt-8 mb-3 text-2xl font-bold text-ink; }
+.rich h3 { @apply mt-6 mb-2 text-lg font-semibold text-ink; }
+.rich p { @apply mb-3 leading-relaxed; }
+.rich ul { @apply mb-4 list-disc space-y-1 pl-6; }
+.rich ol { @apply mb-4 list-decimal space-y-1 pl-6; }
+.rich a { @apply text-brand-600 underline; }
+.rich table { @apply my-4 w-full text-sm; }
+.rich td, .rich th { @apply border border-slate-200 px-3 py-2 text-left; }

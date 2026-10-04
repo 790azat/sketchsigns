@@ -12,7 +12,7 @@
                     <div class="rounded-2xl bg-paper px-4 py-3 font-semibold">{{ $s }}</div>
                 @endforeach
             </div>
-            <p class="mt-8 rounded-2xl border border-brand-200 bg-brand-50 p-5 text-sm">Ordering online? Choose <strong>“Design it for me”</strong> on any product page. The {{ \App\Support\Catalog::money(config('catalog.design_fee')) }} design fee is credited toward your order.</p>
+            <p class="mt-8 rounded-2xl border border-brand-200 bg-brand-50 p-5 text-sm">Ordering online? Choose <strong>“Design it for me”</strong> on any product page. The {{ \App\Support\Catalog::money(config('site.design_fee') * 100) }} design fee is credited toward your order.</p>
             <div class="mt-10">
                 <x-faq :items="[
                     ['q' => 'Can you work with my existing branding?', 'a' => 'Yes. We can follow your existing brand guidelines or help refresh your visual identity.'],

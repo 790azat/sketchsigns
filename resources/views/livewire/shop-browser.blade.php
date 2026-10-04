@@ -20,7 +20,7 @@
         </select>
     </div>
 
-    <p class="mb-4 text-sm text-ink-soft" wire:loading.class="opacity-50">{{ $products->count() }} {{ Str::plural('product', $products->count()) }}</p>
+    <p class="mb-4 text-sm text-ink-soft" wire:loading.class="opacity-50">{{ $products->total() }} {{ Str::plural('product', $products->total()) }}</p>
 
     @if ($products->isEmpty())
         <div class="rounded-2xl border border-dashed border-slate-300 p-12 text-center">
@@ -31,8 +31,9 @@
     @else
         <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" wire:loading.class="opacity-60">
             @foreach ($products as $product)
-                <x-product-card :product="$product" wire:key="{{ $product['slug'] }}" />
+                <x-product-card :product="$product" wire:key="{{ $product->slug }}" />
             @endforeach
         </div>
+        <div class="mt-8">{{ $products->links() }}</div>
     @endif
 </div>

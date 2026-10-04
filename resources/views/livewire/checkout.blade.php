@@ -44,7 +44,7 @@
                 <h2 class="text-lg font-bold">Your order</h2>
                 <ul class="mt-4 space-y-3 text-sm">
                     @foreach ($items as $item)
-                        <li class="flex justify-between gap-3"><span>{{ $item['quantity'] }} × {{ $item['name'] }}<br><span class="text-xs text-ink-soft">{{ $item['size_label'] }}</span></span><span class="font-semibold">{{ Catalog::money($item['total']) }}</span></li>
+                        <li class="flex justify-between gap-3"><span>{{ $item['quantity'] }} × {{ $item['name'] }}<br><span class="text-xs text-ink-soft">{{ collect($item['options'])->filter()->implode(' · ') }}</span></span><span class="font-semibold">{{ Catalog::money($item['total']) }}</span></li>
                     @endforeach
                 </ul>
                 <div class="mt-4 flex justify-between border-t border-slate-300 pt-4 font-bold"><span>Subtotal</span><span>{{ Catalog::money($subtotal) }}</span></div>

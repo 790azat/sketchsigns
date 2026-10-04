@@ -5,7 +5,7 @@
     </div>
     <div class="flex flex-1 flex-col p-4">
         <h3 class="font-semibold text-ink group-hover:text-brand-600">{{ $product['name'] }}</h3>
-        <p class="mt-1 line-clamp-2 text-sm text-ink-soft">{{ $product['summary'] }}</p>
-        <p class="mt-auto pt-3 text-sm text-ink-soft">From <span class="text-base font-bold text-ink">{{ \App\Support\Catalog::money($product['from']) }}</span></p>
+        <p class="mt-1 line-clamp-2 text-sm text-ink-soft">{{ $product->summary() }}</p>
+        <p class="mt-auto pt-3 text-sm text-ink-soft">From <span class="text-base font-bold text-ink">{{ \App\Support\Catalog::money($product->price_min) }}</span></p>
     </div>
 </a>

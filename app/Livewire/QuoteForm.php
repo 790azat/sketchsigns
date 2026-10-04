@@ -78,7 +78,7 @@ class QuoteForm extends Component
     public function render()
     {
         return view('livewire.quote-form', [
-            'categories' => Catalog::categories(),
+            'categories' => Catalog::navCategories(),
         ]);
     }
 }

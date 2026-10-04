@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\SyncController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(SiteController::class)->group(function () {
     Route::get('/', 'home')->name('home');
     Route::get('/shop', 'shop')->name('shop');
-    Route::get('/category/{slug}', 'category')->name('category');
-    Route::get('/product/{slug}', 'product')->name('product');
+    Route::get('/product-category/{category}', 'category')->name('category');
+    Route::get('/product/{product}', 'product')->name('product');
     Route::get('/industries-we-serve', 'industries')->name('industries');
     Route::get('/industries-we-serve/{slug}', 'industry')->name('industry');
     Route::get('/policies/{page}', 'legal')->name('legal');
@@ -24,20 +25,19 @@ Route::view('/graphic-design-services', 'pages.design')->name('design');
 Route::view('/track-order', 'pages.track')->name('track');
 
 // Keep links from the old WordPress site working.
-Route::permanentRedirect('/product-category/signs', '/category/signs');
-Route::permanentRedirect('/custom-signs', '/category/signs');
-Route::permanentRedirect('/product-category/banner-printing', '/category/banners');
-Route::permanentRedirect('/banners', '/category/banners');
-Route::permanentRedirect('/custom-flags', '/category/flags-fabric');
-Route::permanentRedirect('/product-category/flags', '/category/flags-fabric');
-Route::permanentRedirect('/wall-and-window-graphics', '/category/wall-window-graphics');
-Route::permanentRedirect('/product-category/wall-window-graphics', '/category/wall-window-graphics');
-Route::permanentRedirect('/product-category/trade-show-displays', '/category/event-displays');
-Route::permanentRedirect('/a-frame-signs', '/category/stands-sidewalk-signs');
-Route::permanentRedirect('/product-category/real-estate-signs', '/category/stands-sidewalk-signs');
-Route::permanentRedirect('/product-category/print-products', '/category/print-products');
-Route::permanentRedirect('/product-category/channel-letters', '/product/channel-letters');
+Route::permanentRedirect('/custom-signs', '/product-category/signs');
+Route::permanentRedirect('/banners', '/product-category/banner-printing');
+Route::permanentRedirect('/custom-flags', '/product-category/flags');
+Route::permanentRedirect('/wall-and-window-graphics', '/product-category/wall-window-graphics');
+Route::permanentRedirect('/a-frame-signs', '/shop?q=a-frame');
 Route::permanentRedirect('/turnaround-policy', '/policies/turnaround-policy');
 Route::permanentRedirect('/refund-policy', '/policies/refund-policy');
 Route::permanentRedirect('/terms-and-conditions', '/policies/terms-and-conditions');
 Route::permanentRedirect('/privacy-policy', '/policies/privacy-policy');
+
+Route::controller(SyncController::class)->prefix('admin/sync')->group(function () {
+    Route::get('migrate', 'migrate');
+    Route::get('categories', 'categories');
+    Route::get('products', 'products');
+    Route::get('status', 'status');
+});

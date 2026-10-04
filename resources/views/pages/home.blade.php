@@ -24,10 +24,9 @@
             <div class="hidden grid-cols-2 gap-4 lg:grid">
                 @foreach ($categories->take(4) as $c)
                     <a href="{{ route('category', $c['slug']) }}" class="group relative overflow-hidden rounded-3xl bg-white/5 ring-1 ring-white/10 {{ $loop->odd ? 'translate-y-6' : '' }}">
-                        <x-img :src="$c['image']" :alt="$c['name']" class="aspect-square w-full object-cover opacity-90 transition group-hover:scale-105 group-hover:opacity-100" />
+                        <x-img :src="$c->image ?? $c->products()->value('image')" :alt="$c['name']" class="aspect-square w-full object-cover opacity-90 transition group-hover:scale-105 group-hover:opacity-100" />
                         <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 p-4">
                             <p class="font-bold">{{ $c['name'] }}</p>
-                            <p class="text-sm text-white/70">From {{ Catalog::money($c['from']) }}</p>
                         </div>
                     </a>
                 @endforeach
@@ -60,11 +59,10 @@
             @foreach ($categories as $c)
                 <a href="{{ route('category', $c['slug']) }}" class="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:border-brand-300 hover:shadow-lg">
                     <div class="aspect-square overflow-hidden bg-paper">
-                        <x-img :src="$c['image']" :alt="'Shop '.$c['name']" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+                        <x-img :src="$c->image ?? $c->products()->value('image')" :alt="'Shop '.$c['name']" class="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
                     </div>
                     <div class="p-4">
                         <h3 class="font-bold group-hover:text-brand-600">{{ $c['name'] }}</h3>
-                        <p class="text-sm text-ink-soft">From {{ Catalog::money($c['from']) }}</p>
                     </div>
                 </a>
             @endforeach

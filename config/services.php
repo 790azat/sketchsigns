@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    'woo' => [
+        // Public WooCommerce Store API of the old WordPress site, used by the catalog importer.
+        'url' => env('WOO_STORE_API_URL', 'https://sketchsigns.com/wp-json/wc/store/v1'),
+    ],
+
+    'blob' => [
+        'token' => env('BLOB_READ_WRITE_TOKEN'),
+        'api_url' => env('VERCEL_BLOB_API_URL', 'https://vercel.com/api/blob'),
+    ],
+
+    // Protects the /admin/sync endpoints that run migrations and the catalog import on Vercel.
+    'admin_token' => env('ADMIN_TOKEN'),
+
 ];

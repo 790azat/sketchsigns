@@ -49,7 +49,7 @@ class Checkout extends Component
         $lines = collect($items)->map(function ($item) {
             $options = collect($item['options'])->map(fn ($v, $k) => "$k: $v")->implode(', ');
 
-            return "- {$item['quantity']} × {$item['name']} ({$item['size_label']}) {$options} — artwork: {$item['artwork']} — ".Catalog::money($item['total'])
+            return "- {$item['quantity']} × {$item['name']} ({$options}) — artwork: {$item['artwork']} — ".Catalog::money($item['total'])
                 .($item['notes'] ? "\n  Notes: {$item['notes']}" : '');
         })->implode("\n");
 

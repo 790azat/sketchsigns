@@ -16,13 +16,13 @@
                             <div class="flex items-start justify-between gap-4">
                                 <div>
                                     <a href="{{ route('product', $item['product']) }}" class="font-semibold hover:text-brand-600">{{ $item['name'] }}</a>
-                                    <p class="text-sm text-ink-soft">{{ $item['size_label'] }}</p>
+                                    
                                 </div>
                                 <p class="font-bold">{{ Catalog::money($item['total']) }}</p>
                             </div>
                             <p class="mt-1 text-xs text-ink-soft">
-                                {{ collect($item['options'])->map(fn ($v, $k) => "$k: $v")->implode(' · ') }}
-                                @if ($item['artwork'] === 'design') · Design service (+{{ Catalog::money(config('catalog.design_fee')) }}) @endif
+                                {{ collect($item['options'])->filter()->map(fn ($v, $k) => "$k: $v")->implode(' · ') }}
+                                @if ($item['artwork'] === 'design') · Design service (+{{ Catalog::money(config('site.design_fee') * 100) }}) @endif
                             </p>
                             <div class="mt-auto flex items-center justify-between pt-3">
                                 <div class="flex items-center rounded-full border border-slate-300">

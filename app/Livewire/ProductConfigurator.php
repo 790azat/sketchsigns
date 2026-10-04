@@ -2,8 +2,9 @@
 
 namespace App\Livewire;
 
+use App\Models\Product;
+use App\Models\Variation;
 use App\Support\Cart;
-use App\Support\Catalog;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -12,15 +13,10 @@ use Livewire\Component;
 class ProductConfigurator extends Component
 {
     #[Locked]
-    public string $slug;
+    public int $productId;
 
-    public string $size = '';
-
-    public ?float $width = 24;
-
-    public ?float $height = 36;
-
-    public array $options = [];
+    /** Chosen term slug per option group, keyed by position (group names aren't safe wire:model paths). */
+    public array $selected = [];
 
     public int $quantity = 1;
 
@@ -30,52 +26,46 @@ class ProductConfigurator extends Component
 
     public bool $added = false;
 
-    public function mount(string $slug): void
+    public function mount(Product $product): void
     {
-        $this->slug = $slug;
-        $product = $this->product;
+        $this->productId = $product->id;
 
-        $this->size = array_key_first(Catalog::sizes($product));
-
-        // Options are keyed by position: group names like "# of Sides" are not safe wire:model paths.
-        foreach (array_values($product['options'] ?? []) as $i => $choices) {
-            $this->options[$i] = array_key_first($choices);
+        $first = $product->variations->sortBy('price')->first();
+        foreach ($product->optionGroups() as $i => $group) {
+            $wanted = $first?->options[$group['name']] ?? '';
+            $this->selected[$i] = $wanted !== '' ? $wanted : ($group['terms'][0]['slug'] ?? '');
         }
     }
 
-    /**
-     * @return array<string, string> group name => chosen value
-     */
-    protected function namedOptions(): array
+    #[Computed]
+    public function product(): Product
     {
-        $groups = array_keys($this->product['options'] ?? []);
+        return Product::with('variations')->findOrFail($this->productId);
+    }
 
-        return collect($groups)->mapWithKeys(fn ($group, $i) => [$group => $this->options[$i] ?? null])->all();
+    /** @return array<string, string> option name => chosen term slug */
+    protected function named(): array
+    {
+        return collect($this->product->optionGroups())
+            ->mapWithKeys(fn ($group, $i) => [$group['name'] => $this->selected[$i] ?? ''])
+            ->all();
     }
 
     #[Computed]
-    public function product(): array
+    public function variation(): ?Variation
     {
-        return Catalog::product($this->slug) ?? abort(404);
+        return $this->product->findVariation($this->named());
     }
 
     #[Computed]
-    public function price(): array
+    public function total(): ?int
     {
-        $price = Catalog::price(
-            $this->product,
-            $this->size,
-            $this->namedOptions(),
-            max(1, (int) $this->quantity),
-            $this->width,
-            $this->height,
-        );
-
-        if ($this->artwork === 'design') {
-            $price['total'] += config('catalog.design_fee');
+        if (! $this->variation) {
+            return null;
         }
 
-        return $price;
+        return $this->variation->price * max(1, $this->quantity)
+            + ($this->artwork === 'design' ? config('site.design_fee') * 100 : 0);
     }
 
     public function updated(): void
@@ -85,60 +75,47 @@ class ProductConfigurator extends Component
 
     public function addToCart(): void
     {
-        $this->validate($this->rules());
-
         $product = $this->product;
-        $price = $this->price;
-        $sizeLabel = $this->size === 'custom'
-            ? "{$this->width}\" x {$this->height}\" (custom)"
-            : Catalog::sizes($product)[$this->size];
+        $rules = [
+            'quantity' => ['required', 'integer', 'min:1', 'max:9999'],
+            'artwork' => ['required', Rule::in(['upload-later', 'have', 'design'])],
+            'notes' => ['nullable', 'string', 'max:500'],
+        ];
+        foreach ($product->optionGroups() as $i => $group) {
+            $rules['selected.'.$i] = ['required', Rule::in(array_column($group['terms'], 'slug'))];
+        }
+        $this->validate($rules);
+
+        if (! $this->variation) {
+            $this->addError('selected', 'This combination is not available. Please choose different options.');
+
+            return;
+        }
+
+        $labels = collect($product->optionGroups())->mapWithKeys(function ($group, $i) {
+            $term = collect($group['terms'])->firstWhere('slug', $this->selected[$i] ?? null);
+
+            return [$group['name'] => $term['name'] ?? ''];
+        })->all();
 
         Cart::add([
-            'product' => $this->slug,
-            'name' => $product['name'],
-            'image' => $product['image'],
-            'size' => $this->size,
-            'size_label' => $sizeLabel,
-            'width' => $this->size === 'custom' ? $this->width : null,
-            'height' => $this->size === 'custom' ? $this->height : null,
-            'options' => $this->namedOptions(),
+            'product' => $product->slug,
+            'name' => $product->name,
+            'image' => $product->image,
+            'variation' => $this->variation->id,
+            'options' => $labels,
             'artwork' => $this->artwork,
             'notes' => $this->notes,
-            'quantity' => (int) $this->quantity,
-            'unit' => $price['unit'],
-            'total' => $price['total'],
+            'quantity' => $this->quantity,
+            'unit' => $this->variation->price,
         ]);
 
         $this->added = true;
         $this->dispatch('cart-updated');
     }
 
-    protected function rules(): array
-    {
-        $product = $this->product;
-        $rules = [
-            'size' => ['required', Rule::in(array_keys(Catalog::sizes($product)))],
-            'quantity' => ['required', 'integer', 'min:1', 'max:1000'],
-            'artwork' => ['required', 'in:upload-later,have,design'],
-            'notes' => ['nullable', 'string', 'max:500'],
-        ];
-
-        if ($this->size === 'custom') {
-            $rules['width'] = ['required', 'numeric', 'min:6', 'max:1740'];
-            $rules['height'] = ['required', 'numeric', 'min:6', 'max:114'];
-        }
-
-        foreach (array_values($product['options'] ?? []) as $i => $choices) {
-            $rules['options.'.$i] = ['required', Rule::in(array_keys($choices))];
-        }
-
-        return $rules;
-    }
-
     public function render()
     {
-        return view('livewire.product-configurator', [
-            'sizes' => Catalog::sizes($this->product),
-        ]);
+        return view('livewire.product-configurator');
     }
 }

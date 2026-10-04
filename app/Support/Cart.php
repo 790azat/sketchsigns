@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 
 /**
  * Session-backed cart. Sessions use the cookie driver, so the cart survives
- * Vercel's stateless serverless functions without a database.
+ * Vercel's stateless functions. Amounts are in cents.
  */
 class Cart
 {
@@ -20,7 +20,7 @@ class Cart
     public static function add(array $item): void
     {
         $items = static::items();
-        $items[(string) Str::uuid()] = $item;
+        $items[(string) Str::uuid()] = static::withTotal($item);
         session([self::KEY => $items]);
     }
 
@@ -28,21 +28,10 @@ class Cart
     {
         $items = static::items();
 
-        if (! isset($items[$id])) {
-            return;
+        if (isset($items[$id])) {
+            $items[$id] = static::withTotal(['quantity' => max(1, min(9999, $quantity))] + $items[$id]);
+            session([self::KEY => $items]);
         }
-
-        $product = Catalog::product($items[$id]['product']);
-        if (! $product) {
-            static::remove($id);
-
-            return;
-        }
-
-        $item = $items[$id];
-        $price = Catalog::price($product, $item['size'], $item['options'], max(1, $quantity), $item['width'] ?? null, $item['height'] ?? null);
-        $items[$id] = array_merge($item, ['quantity' => max(1, $quantity), 'unit' => $price['unit'], 'total' => $price['total']]);
-        session([self::KEY => $items]);
     }
 
     public static function remove(string $id): void
@@ -62,8 +51,15 @@ class Cart
         return array_sum(array_column(static::items(), 'quantity'));
     }
 
-    public static function subtotal(): float
+    public static function subtotal(): int
     {
-        return round(array_sum(array_column(static::items(), 'total')), 2);
+        return array_sum(array_column(static::items(), 'total'));
+    }
+
+    private static function withTotal(array $item): array
+    {
+        $item['total'] = $item['unit'] * $item['quantity'] + ($item['artwork'] === 'design' ? config('site.design_fee') * 100 : 0);
+
+        return $item;
     }
 }

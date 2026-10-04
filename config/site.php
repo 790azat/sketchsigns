@@ -24,6 +24,16 @@ return [
     // Point this at your own CDN / bucket once the old site is switched off.
     'media_url' => rtrim(env('MEDIA_URL', 'https://sketchsigns.com/wp-content/uploads'), '/'),
 
+    // Amount in dollars added when the customer asks us to design the artwork.
+    'design_fee' => 25,
+
+    // Category slugs shown in the main menu, in order. Empty = the biggest top-level categories.
+    'nav_categories' => [],
+
+    // Product slugs shown under "Popular products" on the home page (topped up automatically).
+    'featured_products' => ['a-frame-sidewalk-sign', 'vinyl-banner', 'car-magnets', 'pole-banner-set', 'feather-angled-flag', 'removable-window-clings',
+        'floor-graphics', 'coroplast-yard-signs', 'step-and-repeat-backdrop', 'acrylic-wall-signs', 'standard-retractable-banner', 'econo-feather-flag'],
+
     'logo' => '2026/03/sketch-signs-logo-icon-270x270.png',
 
     'social' => [
