@@ -1,4 +1,4 @@
-<x-layout title="FAQ">
+<x-layout title="FAQ: Orders, Turnaround & Artwork" description="Answers about turnaround times, artwork files, shipping, installation and payment for custom signs and banners from Sketch Signs in Los Angeles." :schema="[\App\Support\Seo::faq(config('site.faq'))]">
     <x-page-hero title="Frequently asked questions" eyebrow="Help center" :crumbs="['FAQ' => null]" />
     <section class="container-x max-w-3xl py-12">
         <x-faq :items="config('site.faq')" />

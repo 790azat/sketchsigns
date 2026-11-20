@@ -1,4 +1,4 @@
-<x-layout title="Get a Free Quote">
+<x-layout title="Get a Free Quote" description="Request a free quote for custom signs, banners, window graphics, printing or installation in Los Angeles. We reply with exact pricing fast.">
     <x-page-hero title="Get a free quote in 15 minutes" eyebrow="Request a quote" :crumbs="['Get a Free Quote' => null]">
         Sign design, printing, banners, window graphics and installation — tell us about your project and we'll get you exact pricing.
     </x-page-hero>

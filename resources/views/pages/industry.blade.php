@@ -1,4 +1,4 @@
-<x-layout :title="$industry['name'].' Signs & Printing'" :description="$industry['intro']">
+<x-layout :title="$industry['name'].' Signs & Printing'" :description="$industry['intro'].' Custom signs, banners and print from Sketch Signs in Los Angeles.'" :image="$products->first()?->image">
     <x-page-hero :title="$industry['name']" eyebrow="Industries we serve" :crumbs="['Industries' => route('industries'), $industry['name'] => null]">
         {{ $industry['intro'] }}
     </x-page-hero>

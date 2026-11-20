@@ -1,4 +1,4 @@
-<x-layout title="Page not found">
+<x-layout noindex title="Page not found">
     <section class="container-x py-24 text-center">
         <p class="eyebrow">404</p>
         <h1 class="mt-2 text-4xl font-extrabold tracking-tight">We couldn't find that page</h1>

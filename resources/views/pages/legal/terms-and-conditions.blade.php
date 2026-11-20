@@ -1,4 +1,4 @@
-<x-layout title="Terms & Conditions">
+<x-layout title="Terms & Conditions" description="Terms and conditions for ordering custom signs, banners, printing and installation from Sketch Signs.">
     <x-page-hero title="Terms & conditions" :crumbs="['Terms & Conditions' => null]" />
     <article class="container-x prose-page max-w-3xl py-12">
         @foreach ([

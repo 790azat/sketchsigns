@@ -1,4 +1,4 @@
-<x-layout title="Shipping & Turnaround">
+<x-layout title="Shipping & Turnaround" description="Production and shipping times for Sketch Signs orders: most signs and banners are produced in 2–4 business days and ship across California.">
     <x-page-hero title="Shipping and turnaround" eyebrow="From concept to completion" :crumbs="['Turnaround Policy' => null]">
         We make sure your order arrives quickly, safely and without any stress — from the moment you order to the moment it reaches your door.
     </x-page-hero>

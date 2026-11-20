@@ -1,4 +1,4 @@
-<x-layout title="Returns & Refunds Policy">
+<x-layout title="Returns & Refunds Policy" description="Returns, reprints and refunds at Sketch Signs: what to do if your custom sign, banner or print order is not right.">
     <x-page-hero title="Returns & refunds policy" eyebrow="Shop with confidence" :crumbs="['Refund & Return Policy' => null]">
         If something isn't right with your order, we're here to help.
     </x-page-hero>

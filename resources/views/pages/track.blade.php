@@ -1,4 +1,4 @@
-<x-layout title="Track Your Order">
+<x-layout noindex title="Track Your Order">
     <x-page-hero title="Track your order" eyebrow="Order status" :crumbs="['Track Your Order' => null]">
         Once your order ships, you'll receive a tracking number by email so you can follow your delivery in real time.
     </x-page-hero>

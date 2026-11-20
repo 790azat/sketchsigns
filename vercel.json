@@ -31,7 +31,7 @@
             "dest": "/media/$1"
         },
         {
-            "src": "/(favicon\\.ico|robots\\.txt)",
+            "src": "/(favicon\\.ico)",
             "dest": "/$1"
         },
         {

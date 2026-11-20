@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\SyncController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\SiteController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,16 +25,10 @@ Route::view('/sign-installation', 'pages.installation')->name('installation');
 Route::view('/graphic-design-services', 'pages.design')->name('design');
 Route::view('/track-order', 'pages.track')->name('track');
 
-// Keep links from the old WordPress site working.
-Route::permanentRedirect('/custom-signs', '/product-category/signs');
-Route::permanentRedirect('/banners', '/product-category/banner-printing');
-Route::permanentRedirect('/custom-flags', '/product-category/flags');
-Route::permanentRedirect('/wall-and-window-graphics', '/product-category/wall-window-graphics');
-Route::permanentRedirect('/a-frame-signs', '/shop?q=a-frame');
-Route::permanentRedirect('/turnaround-policy', '/policies/turnaround-policy');
-Route::permanentRedirect('/refund-policy', '/policies/refund-policy');
-Route::permanentRedirect('/terms-and-conditions', '/policies/terms-and-conditions');
-Route::permanentRedirect('/privacy-policy', '/policies/privacy-policy');
+// Old WordPress addresses are redirected in App\Support\Redirects (config/redirects.php + admin).
+
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 
 Route::controller(SyncController::class)->prefix('admin/sync')->group(function () {
     Route::get('migrate', 'migrate');

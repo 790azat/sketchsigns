@@ -1,4 +1,4 @@
-<x-layout title="About Sketch Signs">
+<x-layout title="About Sketch Signs" description="Sketch Signs is a Los Angeles sign company: design, printing and installation of custom signs, banners and displays for local businesses.">
     <x-page-hero title="Hello, we're Sketch Signs" eyebrow="Your signage partner from concept to completion" :crumbs="['About' => null]" />
     <section class="container-x grid items-center gap-12 py-16 lg:grid-cols-2">
         <div>
