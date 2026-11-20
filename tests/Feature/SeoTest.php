@@ -12,12 +12,6 @@ class SeoTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutVite();
-    }
-
     private function product(array $attributes = []): Product
     {
         $category = Category::create(['slug' => 'signs', 'name' => 'Signs']);
