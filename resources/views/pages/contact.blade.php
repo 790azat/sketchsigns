@@ -1,4 +1,4 @@
-<x-layout title="Contact Us">
+<x-layout title="Contact Us" description="Contact Sketch Signs in Los Angeles: call (213) 753-2121 or email sales@sketchsigns.com about orders, quotes and sign installation.">
     <x-page-hero title="Contact Sketch Signs" eyebrow="We're a call away" :crumbs="['Contact' => null]">
         Questions about an order, a quote or an installation? Reach out — our team answers fast.
     </x-page-hero>

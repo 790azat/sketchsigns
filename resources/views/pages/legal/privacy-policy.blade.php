@@ -1,4 +1,4 @@
-<x-layout title="Privacy Policy">
+<x-layout title="Privacy Policy" description="How Sketch Signs collects, uses and protects your personal information when you order signs and printing online.">
     <x-page-hero title="Privacy policy" :crumbs="['Privacy Policy' => null]" />
     <article class="container-x prose-page max-w-3xl py-12">
         <h2>Who we are</h2>

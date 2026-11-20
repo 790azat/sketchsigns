@@ -1,5 +1,6 @@
-@php use App\Support\Catalog; @endphp
-<x-layout :title="$product->name" :description="$product->summary()">
+@php use App\Support\Catalog; use App\Support\Seo; @endphp
+<x-layout :seo-title="Seo::productTitle($product)" :description="Seo::productDescription($product)" :image="$product->image" type="product"
+          :schema="[Seo::product($product), Seo::breadcrumbs(array_filter([$category?->name ?? '' => $category ? route('category', $category) : null, $product->name => null], fn ($v, $k) => $k !== '', ARRAY_FILTER_USE_BOTH))]">
     <section class="container-x py-8 sm:py-12">
         <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
             <a href="{{ route('home') }}" class="hover:text-ink">Home</a>

@@ -26,6 +26,14 @@ return [
     'canonical_url' => rtrim(env('SITE_CANONICAL_URL', 'https://sketchsigns.com'), '/'),
     'indexable' => (bool) env('SITE_INDEXABLE', false),
 
+    // Search engines and analytics: paste the codes from Google Search Console, Bing Webmaster Tools and GA4.
+    'google_site_verification' => env('GOOGLE_SITE_VERIFICATION'),
+    'bing_site_verification' => env('BING_SITE_VERIFICATION'),
+    'google_analytics_id' => env('GOOGLE_ANALYTICS_ID'),
+
+    // Picture shown when a page without its own photo is shared (Facebook, iMessage, Slack…).
+    'share_image' => '2026/03/office-lobby-sign-1000x800.jpg',
+
     'media_url' => rtrim(env('MEDIA_URL', 'https://sketchsigns.com/wp-content/uploads'), '/'),
 
     // Serve catalog images from public/media instead of Vercel Blob.

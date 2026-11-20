@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Products\Schemas;
 
 use App\Filament\Support\Money;
 use App\Support\Catalog;
+use App\Support\Seo;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -81,6 +82,23 @@ class ProductForm
                             ->reorderable(),
                     ]),
 
+                Section::make('SEO')
+                    ->columnSpan(2)
+                    ->description('How this page looks in Google. Leave empty to use the automatic text shown in grey.')
+                    ->collapsible()
+                    ->schema([
+                        TextInput::make('seo_title')
+                            ->label('Title in Google')
+                            ->maxLength(255)
+                            ->placeholder(fn ($record) => $record ? Seo::productTitle($record) : null)
+                            ->helperText('Best under 60 characters.'),
+                        Textarea::make('seo_description')
+                            ->label('Description in Google')
+                            ->rows(2)
+                            ->maxLength(500)
+                            ->placeholder(fn ($record) => $record ? Seo::productDescription($record) : null)
+                            ->helperText('Best 120–160 characters.'),
+                    ]),
                 Section::make('Options')
                     ->columnSpanFull()
                     ->description('Option groups the customer picks from (Size, Material…). Each variation below sets the price for one combination.')

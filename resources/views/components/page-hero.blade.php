@@ -1,4 +1,9 @@
 @props(['title', 'eyebrow' => null, 'crumbs' => []])
+@if ($crumbs)
+    @push('schema')
+        <script type="application/ld+json">{!! json_encode(\App\Support\Seo::breadcrumbs($crumbs), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+    @endpush
+@endif
 <section class="bg-ink text-white">
     <div class="container-x py-12 sm:py-16">
         @if ($crumbs)

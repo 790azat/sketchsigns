@@ -1,5 +1,5 @@
 @php use App\Support\Catalog; @endphp
-<x-layout>
+<x-layout :schema="[\App\Support\Seo::organization(), \App\Support\Seo::website()]">
     {{-- Hero --}}
     <section class="relative overflow-hidden bg-ink text-white">
         <div class="absolute inset-0 opacity-25">

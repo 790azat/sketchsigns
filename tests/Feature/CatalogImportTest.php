@@ -3,8 +3,10 @@
 namespace Tests\Feature;
 
 use App\Livewire\ProductConfigurator;
+use App\Models\Media;
 use App\Models\Product;
 use App\Services\WooImporter;
+use App\Support\Catalog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Livewire\Livewire;
@@ -85,7 +87,8 @@ class CatalogImportTest extends TestCase
         $this->get('/shop')->assertOk()->assertSee('Real Estate Sign Riders');
         $this->get('/product-category/signs')->assertOk()->assertSee('Real Estate Sign Riders');
         $this->get('/product/real-estate-sign-riders')->assertOk()->assertSee('$11.20 – $22.40', false)->assertSee('At a glance');
-        $this->get('/product/nope')->assertNotFound();
+        $this->get('/product/nope')->assertRedirect('/shop'); // unknown old product addresses go to the shop
+        $this->get('/nope')->assertNotFound();
     }
 
     public function test_configurator_prices_by_variation_and_adds_to_cart(): void
@@ -115,15 +118,15 @@ class CatalogImportTest extends TestCase
     public function test_media_can_fall_back_to_the_original_url(): void
     {
         $blob = 'https://abc.public.blob.vercel-storage.com/products/x.jpg';
-        \App\Models\Media::create(['source_url' => 'https://sketchsigns.com/wp-content/uploads/x.jpg', 'url' => $blob]);
+        Media::create(['source_url' => 'https://sketchsigns.com/wp-content/uploads/x.jpg', 'url' => $blob]);
 
-        $this->assertSame($blob, \App\Support\Catalog::media($blob));
+        $this->assertSame($blob, Catalog::media($blob));
 
         config(['services.blob.serve_origin' => true]);
-        $this->assertSame('https://sketchsigns.com/wp-content/uploads/x.jpg', \App\Support\Catalog::media($blob));
+        $this->assertSame('https://sketchsigns.com/wp-content/uploads/x.jpg', Catalog::media($blob));
 
         config(['site.local_media' => true]);
-        $this->assertSame(url('media/products/x.jpg'), \App\Support\Catalog::media($blob));
+        $this->assertSame(url('media/products/x.jpg'), Catalog::media($blob));
     }
 
     public function test_remirror_uploads_smaller_images_to_the_same_paths(): void
@@ -135,7 +138,7 @@ class CatalogImportTest extends TestCase
         $jpeg = ob_get_clean();
 
         config(['services.blob.token' => 'vercel_blob_rw_store123_secret']);
-        \App\Models\Media::create(['source_url' => 'https://media.example.com/big.jpg', 'url' => 'https://store123.public.blob.vercel-storage.com/products/big.jpg']);
+        Media::create(['source_url' => 'https://media.example.com/big.jpg', 'url' => 'https://store123.public.blob.vercel-storage.com/products/big.jpg']);
 
         $uploaded = [];
         Http::fake([
@@ -147,7 +150,7 @@ class CatalogImportTest extends TestCase
             },
         ]);
 
-        $result = app(\App\Services\WooImporter::class)->remirror();
+        $result = app(WooImporter::class)->remirror();
 
         $this->assertSame(['updated' => 1, 'failed' => 0, 'page' => 1, 'total_pages' => 1], $result);
         $this->assertStringContainsString('pathname=products%2Fbig.jpg', $uploaded[0]->url());

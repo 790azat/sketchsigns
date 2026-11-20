@@ -1,4 +1,4 @@
-<x-layout title="Graphic Design Services">
+<x-layout title="Graphic Design Services" description="Professional graphic design for signs, banners, logos and print. Our Los Angeles designers create brand-consistent, print-ready artwork.">
     <x-page-hero title="Transform your brand with professional graphic design" eyebrow="Graphic design services" :crumbs="['Graphic Design' => null]">
         Your signs, banners and branded graphics are often the first impression customers have of your business. We design striking, brand-consistent, production-ready artwork.
     </x-page-hero>

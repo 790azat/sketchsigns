@@ -1,9 +1,14 @@
-@props(['title' => null, 'description' => null])
+@props(['title' => null, 'seoTitle' => null, 'description' => null, 'image' => null, 'type' => 'website', 'noindex' => false, 'schema' => []])
 @php
     use App\Support\Catalog;
+    use App\Support\Seo;
     $categories = Catalog::navCategories();
     $industries = Catalog::industries();
-    $pageTitle = $title ? $title.' | '.config('site.name') : config('site.name').' — Custom Signs, Banners & Displays in Los Angeles';
+    $pageTitle = $seoTitle ?: ($title ? Seo::title($title) : config('site.name').' — Custom Signs, Banners & Displays in Los Angeles');
+    $metaDescription = Seo::text($description ?: config('site.description'));
+    $canonical = Seo::url(request()->path());
+    $ogImage = Seo::url(Catalog::media($image ?: config('site.share_image')));
+    $schema = array_values(array_filter(is_array($schema) && array_is_list($schema) ? $schema : [$schema]));
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -11,16 +16,38 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $pageTitle }}</title>
-    <meta name="description" content="{{ $description ?? config('site.description') }}">
+    <meta name="description" content="{{ $metaDescription }}">
+    <link rel="canonical" href="{{ $canonical }}">
+    @if ($noindex || ! config('site.indexable'))
+        <meta name="robots" content="noindex, {{ config('site.indexable') ? 'follow' : 'nofollow' }}">
+    @else
+        <meta name="robots" content="index, follow, max-image-preview:large">
+    @endif
+    <meta property="og:site_name" content="{{ config('site.name') }}">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:type" content="{{ $type }}">
     <meta property="og:title" content="{{ $pageTitle }}">
-    <meta property="og:description" content="{{ $description ?? config('site.description') }}">
-    <meta property="og:type" content="website">
-    @php $canonical = rtrim(config('site.canonical_url'), '/').'/'.ltrim(request()->path(), '/'); @endphp
-    <meta property="og:url" content="{{ rtrim($canonical, '/') ?: config('site.canonical_url') }}">
-    <link rel="canonical" href="{{ rtrim($canonical, '/') ?: config('site.canonical_url') }}">
-    @unless (config('site.indexable'))
-        <meta name="robots" content="noindex, nofollow">
-    @endunless
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ $canonical }}">
+    <meta property="og:image" content="{{ $ogImage }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
+    @if ($verification = config('site.google_site_verification'))
+        <meta name="google-site-verification" content="{{ $verification }}">
+    @endif
+    @if ($verification = config('site.bing_site_verification'))
+        <meta name="msvalidate.01" content="{{ $verification }}">
+    @endif
+    @foreach ($schema as $data)
+        <script type="application/ld+json">{!! json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+    @endforeach
+    @stack('schema')
+    @if ($ga = config('site.google_analytics_id'))
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga }}"></script>
+        <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',@js($ga));</script>
+    @endif
     <link rel="icon" href="{{ Catalog::media(config('site.logo')) }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles

@@ -1,4 +1,4 @@
-<x-layout :title="$category->name" :description="strip_tags((string) $category->description) ?: null">
+<x-layout :seo-title="\App\Support\Seo::categoryTitle($category)" :description="\App\Support\Seo::categoryDescription($category)" :image="$category->image">
     <x-page-hero :title="$category->name" eyebrow="Shop by category" :crumbs="array_filter(['Shop' => route('shop'), $category->parent?->name => $category->parent ? route('category', $category->parent) : null, $category->name => null], fn ($v, $k) => $k !== '', ARRAY_FILTER_USE_BOTH)">
         {{ \Illuminate\Support\Str::limit(trim(html_entity_decode(strip_tags((string) $category->description))), 220) }}
     </x-page-hero>

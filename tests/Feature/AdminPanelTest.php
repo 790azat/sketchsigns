@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Livewire\QuoteForm;
 use App\Models\Category;
 use App\Models\Order;
@@ -47,7 +48,7 @@ class AdminPanelTest extends TestCase
         $this->actingAs(User::factory()->create());
 
         foreach (['/admin', '/admin/products', '/admin/products/create', "/admin/products/{$product->slug}/edit", '/admin/categories',
-            '/admin/orders', "/admin/orders/{$order->id}", '/admin/quote-requests', "/admin/quote-requests/{$quote->id}", '/admin/subscribers'] as $url) {
+            '/admin/orders', "/admin/orders/{$order->id}", '/admin/quote-requests', "/admin/quote-requests/{$quote->id}", '/admin/subscribers', '/admin/redirects', "/admin/categories/{$product->categories->first()->slug}/edit"] as $url) {
             $this->get($url)->assertOk();
         }
 
@@ -59,7 +60,7 @@ class AdminPanelTest extends TestCase
         $product = $this->seedCatalog();
         $this->actingAs(User::factory()->create());
 
-        Livewire::test(\App\Filament\Resources\Products\Pages\EditProduct::class, ['record' => $product->slug])
+        Livewire::test(EditProduct::class, ['record' => $product->slug])
             ->assertSchemaStateSet(['price_min' => 15])
             ->fillForm(['price_min' => '12.50', 'is_active' => false])
             ->call('save')

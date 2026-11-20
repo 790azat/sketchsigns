@@ -1,4 +1,4 @@
-<x-layout title="Industries We Serve">
+<x-layout title="Industries We Serve" description="Signs, banners, displays and print for restaurants, retail, medical offices, real estate, construction, churches, salons and more across Los Angeles.">
     <x-page-hero title="Industries we serve" eyebrow="Signage for every business" :crumbs="['Industries' => null]">
         We make signs, banners, displays and print for businesses all over Los Angeles. Find the products that work best for yours.
     </x-page-hero>
